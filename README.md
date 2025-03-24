@@ -1,14 +1,15 @@
 # Telegram Daily Summary Bot
 
-A Telegram bot that automatically summarizes daily operations from a public channel using OpenAI's GPT-4.
+A Telegram bot that automatically summarizes daily operations from a group chat using OpenAI's GPT models.
 
 ## Features
 
-- Monitors a public Telegram channel for operational updates
-- Generates structured daily summaries using OpenAI's GPT-4
+- Monitors a Telegram group for operational updates
+- Generates structured daily summaries using OpenAI
 - Posts summaries at a configurable time (default: 9 PM)
-- Admin commands for configuration and monitoring
+- Provides a command to generate summaries on demand
 - Automatic message categorization and formatting
+- Simple error handling and recovery
 
 ## Prerequisites
 
@@ -32,11 +33,16 @@ pip install -r requirements.txt
 
 3. Create a `.env` file with your configuration:
 ```env
-TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_CHANNEL_ID=your_channel_id
-OPENAI_API_KEY=your_openai_api_key
+# Telegram Configuration
+TELEGRAM_BOT_TOKEN=your_bot_token_here
+TELEGRAM_GROUP_ID=your_group_id_here
+
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Bot Settings
 SUMMARY_TIME=21:00
-TRACKING_KEYWORDS=delivered,preparing,delayed
+TRACKING_KEYWORDS=delivered,preparing,delayed,completed
 TIMEZONE=UTC
 ```
 
@@ -47,39 +53,31 @@ TIMEZONE=UTC
 python main.py
 ```
 
-2. Add the bot to your Telegram channel as an admin with message access.
+2. Add the bot to your Telegram group as an admin with message access.
 
-3. Use admin commands in the channel:
-- `/settime HH:MM` - Set summary posting time
-- `/setkeywords keyword1,keyword2` - Set tracking keywords
-- `/preview` - Preview today's summary
-- `/status` - Check bot status and settings
+3. Available commands:
+- `/status` - Check bot status and message count
+- `/summary` - Generate and post summary immediately
+- `/settime HH:MM` - Set summary posting time (coming soon)
+- `/setkeywords keyword1,keyword2` - Set tracking keywords (coming soon)
+- `/preview` - Preview today's summary without posting (coming soon)
 
 ## Project Structure
 
 ```
 telegram-summary-bot/
 ├── src/
-│   ├── bot/              # Telegram bot implementation
-│   ├── summarizer/       # OpenAI integration
-│   ├── scheduler/        # Daily summary scheduling
-│   ├── config/          # Configuration management
-│   └── utils/           # Utility functions
-├── tests/               # Test files
-├── logs/               # Application logs
+│   ├── bot/            # Telegram bot implementation
+│   ├── summarizer/     # OpenAI integration
+│   ├── scheduler/      # Daily summary scheduling
+│   ├── config/         # Configuration management
+│   └── utils/          # Utility functions
+├── .env                # Environment variables (not tracked by git)
 ├── .env.example        # Example environment variables
 ├── requirements.txt    # Project dependencies
-└── README.md          # This file
+└── README.md           # This file
 ```
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
+Contributions are welcome! Please feel free to submit a Pull Request. 
