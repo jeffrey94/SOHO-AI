@@ -15,7 +15,7 @@ A Telegram bot that automatically summarizes daily operations from a public chan
 - Python 3.8+
 - Telegram Bot Token (from [@BotFather](https://t.me/botfather))
 - OpenAI API Key
-- Access to a public Telegram channel
+- Access to a Telegram group
 
 ## Installation
 

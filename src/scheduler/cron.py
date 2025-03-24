@@ -13,36 +13,41 @@ class SummaryScheduler:
         self.config = config
         self.timezone = pytz.timezone(config.TIMEZONE)
         self.running = False
+        self.task = None
         
-    def start(self):
-        """Start the scheduler."""
+    async def start(self):
+        """Start the scheduler asynchronously"""
         self.running = True
-        asyncio.create_task(self._run_scheduler())
+        self.task = asyncio.create_task(self._run_scheduler())
         
+    async def stop(self):
+        """Stop the scheduler"""
+        self.running = False
+        if self.task:
+            await self.task
+            
     async def _run_scheduler(self):
-        """Main scheduler loop."""
+        """Main scheduler loop"""
         while self.running:
             try:
-                # Get current time in configured timezone
                 now = datetime.now(self.timezone)
                 target_hour, target_minute = map(int, self.config.SUMMARY_TIME.split(':'))
                 
-                # Calculate time until next summary
                 next_run = now.replace(hour=target_hour, minute=target_minute, second=0, microsecond=0)
                 if next_run <= now:
                     next_run = next_run.replace(day=next_run.day + 1)
                     
-                # Wait until next summary time
                 wait_seconds = (next_run - now).total_seconds()
                 logger.info(f"Next summary scheduled for {next_run} ({wait_seconds} seconds from now)")
+                
                 await asyncio.sleep(wait_seconds)
                 
-                # Generate and post summary
-                await self._post_summary()
-                
+                if self.running:
+                    await self._post_summary()
+                    
             except Exception as e:
                 logger.error(f"Error in scheduler: {e}")
-                await asyncio.sleep(60)  # Wait a minute before retrying
+                await asyncio.sleep(60)
                 
     async def _post_summary(self):
         """Generate and post the daily summary."""
